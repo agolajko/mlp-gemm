@@ -1,7 +1,6 @@
 # mygemm/functional.py
 import torch
 import mygemm
-# from . import sgemm as _sgemm, sgemm_bias_relu as _sgemm_bias_relu
 
 
 class SGemmFn(torch.autograd.Function):
