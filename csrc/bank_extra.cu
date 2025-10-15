@@ -131,10 +131,9 @@ torch::Tensor bank_extra(torch::Tensor A, torch::Tensor B)
     const uint TN = 8;
     const uint BM = 128;
     const uint BN = 128;
-    dim3 gridDim(CEIL_DIV(N, BN), CEIL_DIV(M, BM));
-    dim3 blockDim((BM * BN) / (TM * TN));
+    ;
     sgemmResolveBankExtraCol<BM, BN, BK, TM, TN>
-        <<<gridDim, blockDim>>>(M, N, K, alpha, A.data_ptr<float>(), B.data_ptr<float>(), beta, C.data_ptr<float>());
+        <<<grid, block>>>(M, N, K, alpha, A.data_ptr<float>(), B.data_ptr<float>(), beta, C.data_ptr<float>());
 
     return C;
 }
