@@ -1,6 +1,7 @@
 #include <torch/extension.h>
 #include <cuda_runtime.h>
 #include <ATen/cuda/CUDAContext.h>
+#include <c10/cuda/CUDAGuard.h>
 
 namespace
 {
@@ -46,6 +47,10 @@ torch::Tensor sgemm_forward(torch::Tensor A, torch::Tensor B)
 {
     TORCH_CHECK(A.is_cuda() && B.is_cuda(), "CUDA tensors required");
     TORCH_CHECK(A.dtype() == torch::kFloat32 && B.dtype() == torch::kFloat32, "fp32 only");
+
+    TORCH_CHECK(A.getDevice() == B.getDevice(), "A and B must be on same device");
+    c10::cuda::CUDAGuard guard(A.device());
+
     auto M = A.size(0), K = A.size(1);
     TORCH_CHECK(B.size(0) == K, "K mismatch");
     auto N = B.size(1);
@@ -53,10 +58,13 @@ torch::Tensor sgemm_forward(torch::Tensor A, torch::Tensor B)
     auto C = torch::empty({M, N}, A.options());
     dim3 block(16, 16);
     dim3 grid((N + block.x - 1) / block.x, (M + block.y - 1) / block.y);
-    auto stream = at::cuda::getCurrentCUDAStream();
+
+    cudaStream_t stream = at::cuda::getCurrentCUDAStream(A.device().index()).stream();
 
     dummy_sgemm_kernel<<<grid, block, 0, stream>>>(
         A.data_ptr<float>(), B.data_ptr<float>(), C.data_ptr<float>(), M, N, K);
+
+    C10_CUDA_KERNEL_LAUNCH_CHECK();
 
     return C;
 }
