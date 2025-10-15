@@ -1,14 +1,15 @@
 import math
 import torch
-from .functional import sgemm_autograd, sgemm_bias_relu_autograd
+from .functional import sgemm_autograd, sgemm_bias_relu_autograd, sgemm_bank_extra_autograd
 
 
 class MyLinear(torch.nn.Module):
-    def __init__(self, in_features, out_features, bias=True, fused=False):
+    def __init__(self, in_features, out_features, bias=True, fused=False, bank_extra=False):
         super().__init__()
         self.in_features = in_features
         self.out_features = out_features
         self.fused = fused
+        self.bank_extra = bank_extra
         self.weight = torch.nn.Parameter(
             torch.empty(out_features, in_features))
         self.bias = torch.nn.Parameter(
@@ -26,6 +27,8 @@ class MyLinear(torch.nn.Module):
         Bmat = self.weight.t().contiguous()
         if self.fused and self.bias is not None:
             return sgemm_bias_relu_autograd(x, Bmat, self.bias)
+        elif self.bank_extra:
+            return sgemm_bank_extra_autograd(x, Bmat)
         out = sgemm_autograd(x, Bmat)
         if self.bias is not None:
             out = out + self.bias

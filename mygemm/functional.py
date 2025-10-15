@@ -34,8 +34,18 @@ class SGemmBiasReluFn(torch.autograd.Function):
         return dA, dB, db
 
 
+class SGemmBankExtra(torch.autograd.Function):
+    @staticmethod
+    def forward(ctx, A, B):
+        ctx.save_for_backward(A, B)
+        return mygemm.sgemm_bank_extra(A, B)
+
+
 def sgemm_autograd(A, B): return SGemmFn.apply(A, B)
 
 
 def sgemm_bias_relu_autograd(
     A, B, bias): return SGemmBiasReluFn.apply(A, B, bias)
+
+
+def sgemm_bank_extra_autograd(A, B): return SGemmBankExtra.apply(A, B)

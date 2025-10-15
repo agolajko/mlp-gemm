@@ -25,6 +25,7 @@ if not USE_FAKE:
         # If import succeeded, prefer the real ops:
         sgemm = torch.ops.mygemm.sgemm
         sgemm_bias_relu = torch.ops.mygemm.sgemm_bias_relu
+        sgemm_bank_extra = torch.ops.mygemm.sgemm_bank_extra
         if os.getenv("MYGEMM_DEBUG", "0") == "1":
             print("[mygemm] Using CUDA extension ops")
     except Exception as e:
