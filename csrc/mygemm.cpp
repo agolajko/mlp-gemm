@@ -18,3 +18,7 @@ TORCH_LIBRARY_IMPL(mygemm, CUDA, m)
     m.impl("sgemm_bias_relu", &sgemm_bias_relu_forward);
     m.impl("sgemm_bank_extra", &bank_extra);
 }
+
+PYBIND11_MODULE(TORCH_EXTENSION_NAME, m)
+{
+}
