@@ -77,6 +77,8 @@ def main():
                         fused=False).to(dev, dtype=dtype)
     mlp_fused = TinyMLP(args.din, args.dhid, args.dout,
                         fused=True).to(dev, dtype=dtype)
+    mlp_optimized = TinyMLP(args.din, args.dhid, args.dout,
+                            fused=False).to(dev, dtype=dtype)
 
     # Copy weights so comparisons are apples-to-apples
     with torch.no_grad():
@@ -85,21 +87,24 @@ def main():
         mlp_plain.fc2.weight.copy_(mlp_stock[2].weight)
         mlp_plain.fc2.bias.copy_(mlp_stock[2].bias)
         mlp_fused.load_state_dict(mlp_plain.state_dict())
+        mlp_optimized.load_state_dict(mlp_plain.state_dict())
 
     # Correctness (inference)
     with torch.inference_mode():
         y_ref = mlp_stock(x)
         y_plain = mlp_plain(x)
         y_fused = mlp_fused(x)
+        y_optimized = mlp_optimized(x)
 
     def max_err(a, b):
         return (a - b).abs().max().item()
 
     print(f"plain max abs err: {max_err(y_ref, y_plain):.3e}")
     print(f"fused max abs err: {max_err(y_ref, y_fused):.3e}")
+    print(f"optimized max abs err: {max_err(y_ref, y_optimized):.3e}")
 
     # Timing
-    for name, m in [("stock", mlp_stock), ("plain", mlp_plain), ("fused", mlp_fused)]:
+    for name, m in [("stock", mlp_stock), ("plain", mlp_plain), ("fused", mlp_fused), ("optimized", mlp_optimized)]:
         dt = bench_step(m, x, iters=args.iters, warmup=args.warmup, dev=dev)
         print(f"{name:6s}: {dt*1e3:.3f} ms")
 
