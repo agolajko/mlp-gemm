@@ -36,10 +36,12 @@ class MyLinear(torch.nn.Module):
 
 
 class TinyMLP(torch.nn.Module):
-    def __init__(self, d_in, d_hidden, d_out, bias=True, fused=False):
+    def __init__(self, d_in, d_hidden, d_out, bias=True, fused=False, bank_extra=False):
         super().__init__()
-        self.fc1 = MyLinear(d_in, d_hidden, bias=bias, fused=fused)
-        self.fc2 = MyLinear(d_hidden, d_out, bias=bias, fused=False)
+        self.fc1 = MyLinear(d_in, d_hidden, bias=bias,
+                            fused=fused, bank_extra=bank_extra)
+        self.fc2 = MyLinear(d_hidden, d_out, bias=bias,
+                            fused=False, bank_extra=False)
         self.relu = torch.nn.ReLU(inplace=True)
 
     def forward(self, x):
