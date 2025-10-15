@@ -7,7 +7,8 @@ setup(
     ext_modules=[
         CUDAExtension(
             name="mygemm_cuda",  # the built .so/.pyd
-            sources=["csrc/mygemm.cpp", "csrc/mygemm_kernels.cu"],
+            sources=["csrc/mygemm.cpp",
+                     "csrc/mygemm_kernels.cu", "csrc/bank_extra.cu"],
             extra_compile_args={
                 "cxx": ["-O3"],
                 "nvcc": ["-O3", "--use_fast_math"]
