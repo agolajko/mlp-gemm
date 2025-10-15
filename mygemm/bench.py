@@ -78,7 +78,7 @@ def main():
     mlp_fused = TinyMLP(args.din, args.dhid, args.dout,
                         fused=True).to(dev, dtype=dtype)
     mlp_optimized = TinyMLP(args.din, args.dhid, args.dout,
-                            fused=False).to(dev, dtype=dtype)
+                            fused=False, bank_extra=True).to(dev, dtype=dtype)
 
     # Copy weights so comparisons are apples-to-apples
     with torch.no_grad():
