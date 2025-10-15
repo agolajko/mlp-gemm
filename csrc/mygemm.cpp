@@ -3,7 +3,7 @@
 // Declarations implemented in .cu
 torch::Tensor sgemm_forward(torch::Tensor A, torch::Tensor B);
 torch::Tensor sgemm_bias_relu_forward(torch::Tensor A, torch::Tensor B, torch::Tensor bias);
-torch::Tensor BankExtra(torch::Tensor A, torch::Tensor B);
+torch::Tensor bank_extra(torch::Tensor A, torch::Tensor B);
 
 TORCH_LIBRARY(mygemm, m)
 {
@@ -16,5 +16,5 @@ TORCH_LIBRARY_IMPL(mygemm, CUDA, m)
 {
     m.impl("sgemm", &sgemm_forward);
     m.impl("sgemm_bias_relu", &sgemm_bias_relu_forward);
-    m.impl("sgemm_bank_extra", &BankExtra);
+    m.impl("sgemm_bank_extra", &bank_extra);
 }

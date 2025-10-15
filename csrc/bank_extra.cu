@@ -113,7 +113,7 @@ __global__ void sgemmResolveBankExtraCol(int M, int N, int K, float alpha,
     }
 }
 
-torch::Tensor BankExtra(torch::Tensor A, torch::Tensor B)
+torch::Tensor bank_extra(torch::Tensor A, torch::Tensor B)
 {
     TORCH_CHECK(A.is_cuda() && B.is_cuda(), "CUDA tensors required");
     TORCH_CHECK(A.dtype() == torch::kFloat32 && B.dtype() == torch::kFloat32, "fp32 only");
