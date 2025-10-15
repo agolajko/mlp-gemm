@@ -20,9 +20,8 @@ class SGemmFn(torch.autograd.Function):
 class SGemmBiasReluFn(torch.autograd.Function):
     @staticmethod
     def forward(ctx, A, B, bias):
-        Lin = mygemm.sgemm(A, B) + bias
-        C = torch.relu(Lin)
-        ctx.save_for_backward(A, B, bias, Lin)
+        C = mygemm.sgemm_bias_relu(A, B, bias)
+        ctx.save_for_backward(A, B, bias, C)
         return C
 
     @staticmethod
