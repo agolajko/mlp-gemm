@@ -131,7 +131,9 @@ torch::Tensor bank_extra(torch::Tensor A, torch::Tensor B)
     const uint TN = 8;
     const uint BM = 128;
     const uint BN = 128;
-    ;
+    const float alpha = 1.0f;
+    const float beta = 0.0f;
+
     sgemmResolveBankExtraCol<BM, BN, BK, TM, TN>
         <<<grid, block>>>(M, N, K, alpha, A.data_ptr<float>(), B.data_ptr<float>(), beta, C.data_ptr<float>());
 
