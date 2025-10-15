@@ -126,6 +126,9 @@ torch::Tensor bank_extra(torch::Tensor A, torch::Tensor B)
     dim3 grid((N + block.x - 1) / block.x, (M + block.y - 1) / block.y);
     auto stream = at::cuda::getCurrentCUDAStream();
 
+    const uint BK = 8;
+    const uint TM = 8;
+    const uint TN = 8;
     const uint BM = 128;
     const uint BN = 128;
     dim3 gridDim(CEIL_DIV(N, BN), CEIL_DIV(M, BM));
