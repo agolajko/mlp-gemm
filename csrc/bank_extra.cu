@@ -143,7 +143,7 @@ torch::Tensor bank_extra(torch::Tensor A, torch::Tensor B)
     const float beta = 0.0f;
 
     sgemmResolveBankExtraCol<BM, BN, BK, TM, TN>
-        <<<grid, block>>>(M, N, K, alpha, A.data_ptr<float>(), B.data_ptr<float>(), beta, C.data_ptr<float>());
+        <<<gridDim, blockDim, 0, stream>>>(M, N, K, alpha, A.data_ptr<float>(), B.data_ptr<float>(), beta, C.data_ptr<float>());
     C10_CUDA_KERNEL_LAUNCH_CHECK();
 
     return C;
