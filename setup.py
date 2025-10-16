@@ -10,8 +10,8 @@ setup(
             sources=["csrc/mygemm.cpp",
                      "csrc/mygemm_kernels.cu", "csrc/bank_extra.cu"],
             extra_compile_args={
-                "cxx": ["-O3"],
-                "nvcc": ["-O3", "--use_fast_math"]
+                "cxx": ["-O2"],
+                "nvcc": ["-O2", "--use_fast_math"]
             },
         )
     ],

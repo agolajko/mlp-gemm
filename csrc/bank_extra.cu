@@ -8,6 +8,7 @@
 #include <cuda_runtime.h>
 #include <torch/extension.h>
 #include <ATen/cuda/CUDAContext.h>
+#include <c10/cuda/CUDAGuard.h>
 
 #define CEIL_DIV(M, N) (((M) + (N) - 1) / (N))
 
@@ -121,9 +122,12 @@ torch::Tensor bank_extra(torch::Tensor A, torch::Tensor B)
     A = A.contiguous();
     B = B.contiguous();
 
-    auto M = A.size(0), K = A.size(1);
-    TORCH_CHECK(B.size(0) == K, "K mismatch");
+    c10::cuda::CUDAGuard guard(A.device());
+
+    const auto M = A.size(0);
+    const auto K = A.size(1);
     auto N = B.size(1);
+    TORCH_CHECK(B.size(0) == K, "K mismatch");
 
     auto C = torch::empty({M, N}, A.options());
 
