@@ -126,9 +126,13 @@ torch::Tensor bank_extra(torch::Tensor A, torch::Tensor B)
     auto N = B.size(1);
 
     auto C = torch::empty({M, N}, A.options());
-    dim3 block(16, 16);
-    dim3 grid((N + block.x - 1) / block.x, (M + block.y - 1) / block.y);
-    auto stream = at::cuda::getCurrentCUDAStream();
+
+    dim3 blockDim((BM * BN) / (TM * TN)); // 256 threads in 1D
+
+    // Grid dimensions: one block per output tile
+    dim3 gridDim(CEIL_DIV(N, BN), CEIL_DIV(M, BM));
+
+    cudaStream_t stream = at::cuda::getCurrentCUDAStream(A.device().index()).stream();
 
     const uint BK = 8;
     const uint TM = 8;
@@ -140,6 +144,7 @@ torch::Tensor bank_extra(torch::Tensor A, torch::Tensor B)
 
     sgemmResolveBankExtraCol<BM, BN, BK, TM, TN>
         <<<grid, block>>>(M, N, K, alpha, A.data_ptr<float>(), B.data_ptr<float>(), beta, C.data_ptr<float>());
+    C10_CUDA_KERNEL_LAUNCH_CHECK();
 
     return C;
 }
