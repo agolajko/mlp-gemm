@@ -48,7 +48,7 @@ torch::Tensor sgemm_forward(torch::Tensor A, torch::Tensor B)
     TORCH_CHECK(A.is_cuda() && B.is_cuda(), "CUDA tensors required");
     TORCH_CHECK(A.dtype() == torch::kFloat32 && B.dtype() == torch::kFloat32, "fp32 only");
 
-    TORCH_CHECK(A.getDevice() == B.getDevice(), "A and B must be on same device");
+    TORCH_CHECK(A.Device() == B.Device(), "A and B must be on same device");
     c10::cuda::CUDAGuard guard(A.device());
 
     auto M = A.size(0), K = A.size(1);
