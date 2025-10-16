@@ -1,3 +1,11 @@
 [build-system]
-requires = ["setuptools", "wheel", "torch", "numpy"]
+requires = ["setuptools", "wheel", "torch", "numpy", "ninja"]
 build-backend = "setuptools.build_meta"
+
+[project]
+name = "mygemm"
+version = "0.0.1"
+dependencies = [
+    "torch",
+    "numpy"
+]
