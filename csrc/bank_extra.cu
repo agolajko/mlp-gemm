@@ -126,7 +126,7 @@ torch::Tensor bank_extra(torch::Tensor A, torch::Tensor B)
 
     const auto M = A.size(0);
     const auto K = A.size(1);
-    auto N = B.size(1);
+    const auto N = B.size(1);
     TORCH_CHECK(B.size(0) == K, "K mismatch");
 
     auto C = torch::empty({M, N}, A.options());
