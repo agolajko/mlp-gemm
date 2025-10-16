@@ -92,9 +92,21 @@ def main():
     # Correctness (inference)
     with torch.inference_mode():
         y_ref = mlp_stock(x)
+        torch.cuda.synchronize()  # Catch any errors from stock implementation
+        print(f"✓ Stock completed")
+
         y_plain = mlp_plain(x)
+        torch.cuda.synchronize()  # This will catch the CUDA error immediately
+        print(f"✓ Plain completed")
+
         y_fused = mlp_fused(x)
+        torch.cuda.synchronize()
+        print(f"✓ Fused completed")
+
         y_optimized = mlp_optimized(x)
+        torch.cuda.synchronize()
+        print(f"✓ Optimized completed")
+
     print(f"Stock output shape: {y_ref.shape}")
     print(f"Plain output shape: {y_plain.shape}")
     print(f"Fused output shape: {y_fused.shape}")
