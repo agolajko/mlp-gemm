@@ -49,6 +49,9 @@ torch::Tensor sgemm_forward(torch::Tensor A, torch::Tensor B)
     TORCH_CHECK(A.dtype() == torch::kFloat32 && B.dtype() == torch::kFloat32, "fp32 only");
 
     TORCH_CHECK(A.device() == B.device(), "A and B must be on same device");
+
+    A = A.contiguous();
+    B = B.contiguous();
     c10::cuda::CUDAGuard guard(A.device());
 
     auto M = A.size(0), K = A.size(1);
@@ -73,6 +76,9 @@ torch::Tensor sgemm_bias_relu_forward(torch::Tensor A, torch::Tensor B, torch::T
 {
     TORCH_CHECK(A.is_cuda() && B.is_cuda() && bias.is_cuda(), "CUDA tensors required");
     TORCH_CHECK(A.dtype() == torch::kFloat32 && B.dtype() == torch::kFloat32 && bias.dtype() == torch::kFloat32, "fp32 only");
+
+    A = A.contiguous();
+    B = B.contiguous();
     auto M = A.size(0), K = A.size(1);
     TORCH_CHECK(B.size(0) == K, "K mismatch");
     auto N = B.size(1);

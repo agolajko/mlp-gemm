@@ -117,6 +117,10 @@ torch::Tensor bank_extra(torch::Tensor A, torch::Tensor B)
 {
     TORCH_CHECK(A.is_cuda() && B.is_cuda(), "CUDA tensors required");
     TORCH_CHECK(A.dtype() == torch::kFloat32 && B.dtype() == torch::kFloat32, "fp32 only");
+
+    A = A.contiguous();
+    B = B.contiguous();
+
     auto M = A.size(0), K = A.size(1);
     TORCH_CHECK(B.size(0) == K, "K mismatch");
     auto N = B.size(1);

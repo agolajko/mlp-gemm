@@ -95,6 +95,8 @@ def main():
         y_plain = mlp_plain(x)
         y_fused = mlp_fused(x)
         y_optimized = mlp_optimized(x)
+    print(f"Stock output shape: {y_ref.shape}")
+    print(f"Plain output shape: {y_plain.shape}")
 
     def max_err(a, b):
         return (a - b).abs().max().item()
