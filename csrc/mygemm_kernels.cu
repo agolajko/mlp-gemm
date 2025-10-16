@@ -79,7 +79,9 @@ torch::Tensor sgemm_bias_relu_forward(torch::Tensor A, torch::Tensor B, torch::T
 
     A = A.contiguous();
     B = B.contiguous();
-    auto M = A.size(0), K = A.size(1);
+    bias = bias.contiguous();
+
+        auto M = A.size(0), K = A.size(1);
     TORCH_CHECK(B.size(0) == K, "K mismatch");
     auto N = B.size(1);
     TORCH_CHECK(bias.numel() == N, "bias must be length N");
