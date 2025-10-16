@@ -1,4 +1,4 @@
-```markdown
+
 # MLP GEMM Custom CUDA Matrix Multiplication
 
 Testing CUDA kernels for matrix multiplication with fused operations.
@@ -46,4 +46,3 @@ mygemm/
 ## Acknowledgments
 
 Optimized kernel based on [siboehm/SGEMM_CUDA](https://github.com/siboehm/SGEMM_CUDA)
-```
